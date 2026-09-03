@@ -1,0 +1,23 @@
+{
+  "format": "habitat-kit-state",
+  "version": 1,
+  "id": "construction",
+  "epoch": "construction",
+  "label": "under construction",
+  "folder": "screenshots/construction",
+  "seed": 1234,
+  "source": "time_slice.EPOCHS",
+  "sockets": {
+    "Amount": 0.1433,
+    "Incomplete": 0.574,
+    "Scaffold": 0.8698,
+    "Oxidation": 0.0816,
+    "Breach": 0.0112,
+    "Debris": 0.1593,
+    "Density": 0.8335,
+    "Coherence": 0.1865,
+    "Amplitude": 0.9043,
+    "Wavelength": 0.288,
+    "Ghost": 0.0045
+  }
+}

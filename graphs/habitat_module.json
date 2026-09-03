@@ -1,0 +1,3241 @@
+{
+  "format": "gn-as-code",
+  "version": 1,
+  "name": "HK Habitat Module",
+  "kind": "MODIFIER",
+  "blender": "4.2",
+  "interface": {
+    "inputs": [
+      {
+        "name": "Meters Per Grid",
+        "socket": "FLOAT",
+        "default": 1,
+        "min": 0,
+        "subtype": "DISTANCE",
+        "description": "World-grid spacing. GN snap, array pitch, collection-linter grid."
+      },
+      {
+        "name": "Deck Height",
+        "socket": "FLOAT",
+        "default": 3,
+        "min": 0,
+        "subtype": "DISTANCE",
+        "description": "Floor-to-floor spacing. Integer multiple of meters per grid."
+      },
+      {
+        "name": "Airlock Diameter",
+        "socket": "FLOAT",
+        "default": 1,
+        "min": 0,
+        "subtype": "DISTANCE",
+        "description": "Clear circular hatch / tube diameter."
+      },
+      {
+        "name": "Human Standing Height",
+        "socket": "FLOAT",
+        "default": 1.8,
+        "min": 0,
+        "subtype": "DISTANCE",
+        "description": "Scale-reference figure height (UE5 mannequin class)."
+      },
+      {
+        "name": "Human Eye Height",
+        "socket": "FLOAT",
+        "default": 1.65,
+        "min": 0,
+        "subtype": "DISTANCE",
+        "description": "Camera / occupancy eye line on the scale figure."
+      },
+      {
+        "name": "Human Shoulder Width",
+        "socket": "FLOAT",
+        "default": 0.45,
+        "min": 0,
+        "subtype": "DISTANCE",
+        "description": "Figure breadth; must pass through the airlock."
+      },
+      {
+        "name": "Amount",
+        "socket": "FLOAT",
+        "default": 0,
+        "min": 0,
+        "max": 1,
+        "description": "Time-slice decay-pass amount"
+      },
+      {
+        "name": "Incomplete",
+        "socket": "FLOAT",
+        "default": 0,
+        "min": 0,
+        "max": 1,
+        "description": "Time-slice decay-pass incomplete"
+      },
+      {
+        "name": "Scaffold",
+        "socket": "FLOAT",
+        "default": 0,
+        "min": 0,
+        "max": 1,
+        "description": "Time-slice decay-pass scaffold"
+      },
+      {
+        "name": "Oxidation",
+        "socket": "FLOAT",
+        "default": 0,
+        "min": 0,
+        "max": 1,
+        "description": "Time-slice decay-pass oxidation"
+      },
+      {
+        "name": "Breach",
+        "socket": "FLOAT",
+        "default": 0,
+        "min": 0,
+        "max": 1,
+        "description": "Time-slice decay-pass breach"
+      },
+      {
+        "name": "Debris",
+        "socket": "FLOAT",
+        "default": 0,
+        "min": 0,
+        "max": 1,
+        "description": "Time-slice decay-pass debris"
+      },
+      {
+        "name": "Density",
+        "socket": "FLOAT",
+        "default": 0,
+        "min": 0,
+        "max": 1,
+        "description": "Time-slice signal-field density"
+      },
+      {
+        "name": "Coherence",
+        "socket": "FLOAT",
+        "default": 0,
+        "min": 0,
+        "max": 1,
+        "description": "Time-slice signal-field coherence"
+      },
+      {
+        "name": "Amplitude",
+        "socket": "FLOAT",
+        "default": 0,
+        "min": 0,
+        "max": 1,
+        "description": "Time-slice signal-field amplitude"
+      },
+      {
+        "name": "Wavelength",
+        "socket": "FLOAT",
+        "default": 0,
+        "min": 0,
+        "max": 1,
+        "description": "Time-slice signal-field wavelength"
+      },
+      {
+        "name": "Ghost",
+        "socket": "FLOAT",
+        "default": 0,
+        "min": 0,
+        "max": 1,
+        "description": "Time-slice signal-field ghost"
+      },
+      {
+        "name": "Hull",
+        "socket": "MATERIAL",
+        "description": "Master-Node metal (MN Metal). Bind a category master, not a unique shader."
+      },
+      {
+        "name": "Glass",
+        "socket": "MATERIAL",
+        "description": "Master-Node glass (MN Glass). Canopy / dome / viewport."
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Geometry",
+        "socket": "GEOMETRY"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "Group Input",
+      "type": "NodeGroupInput",
+      "location": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": "Group Output",
+      "type": "NodeGroupOutput",
+      "location": [
+        3640,
+        0
+      ]
+    },
+    {
+      "id": "airlock",
+      "type": "GeometryNodeGroup",
+      "label": "HK Airlock",
+      "location": [
+        1400,
+        490
+      ],
+      "properties": {
+        "node_tree": "HK Airlock"
+      }
+    },
+    {
+      "id": "airlock_loc",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        1120,
+        770
+      ]
+    },
+    {
+      "id": "bay",
+      "type": "GeometryNodeGroup",
+      "label": "HK Deck Bay",
+      "location": [
+        840,
+        910
+      ],
+      "properties": {
+        "node_tree": "HK Deck Bay"
+      }
+    },
+    {
+      "id": "bay_live",
+      "type": "ShaderNodeMath",
+      "location": [
+        560,
+        1120
+      ],
+      "properties": {
+        "operation": "SUBTRACT"
+      }
+    },
+    {
+      "id": "bay_scale",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        840,
+        770
+      ]
+    },
+    {
+      "id": "bay_state",
+      "type": "GeometryNodeTransform",
+      "location": [
+        1120,
+        630
+      ]
+    },
+    {
+      "id": "beams",
+      "type": "GeometryNodeJoinGeometry",
+      "location": [
+        2800,
+        0
+      ]
+    },
+    {
+      "id": "canon_above_eye",
+      "type": "ShaderNodeMath",
+      "location": [
+        280,
+        420
+      ],
+      "properties": {
+        "operation": "SUBTRACT"
+      }
+    },
+    {
+      "id": "canon_along_x",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        980
+      ],
+      "inputs": {
+        "Y": 1.570796
+      }
+    },
+    {
+      "id": "canon_along_y",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        840
+      ],
+      "inputs": {
+        "X": 1.570796
+      }
+    },
+    {
+      "id": "canon_face_neg_y",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        700
+      ],
+      "inputs": {
+        "Z": 3.141593
+      }
+    },
+    {
+      "id": "canon_four",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        630
+      ]
+    },
+    {
+      "id": "canon_four_int",
+      "type": "FunctionNodeFloatToInt",
+      "location": [
+        1120,
+        490
+      ]
+    },
+    {
+      "id": "canon_grids_per_deck",
+      "type": "ShaderNodeMath",
+      "location": [
+        280,
+        280
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_half_deck",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        490
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_half_grid",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        350
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_half_shoulder",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        210
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_half_wall",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        70
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_identity_rot",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        560
+      ]
+    },
+    {
+      "id": "canon_neg_half_deck",
+      "type": "ShaderNodeMath",
+      "location": [
+        1120,
+        350
+      ],
+      "properties": {
+        "operation": "MULTIPLY"
+      }
+    },
+    {
+      "id": "canon_neg_half_wall",
+      "type": "ShaderNodeMath",
+      "location": [
+        1120,
+        210
+      ],
+      "properties": {
+        "operation": "MULTIPLY"
+      }
+    },
+    {
+      "id": "canon_neg_unity",
+      "type": "ShaderNodeMath",
+      "location": [
+        560,
+        420
+      ],
+      "properties": {
+        "operation": "SUBTRACT"
+      }
+    },
+    {
+      "id": "canon_origin",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        280
+      ]
+    },
+    {
+      "id": "canon_overhead",
+      "type": "ShaderNodeMath",
+      "location": [
+        280,
+        140
+      ],
+      "properties": {
+        "operation": "SUBTRACT"
+      }
+    },
+    {
+      "id": "canon_radius",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        -70
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_sixteen",
+      "type": "ShaderNodeMath",
+      "location": [
+        1120,
+        70
+      ],
+      "properties": {
+        "operation": "MULTIPLY"
+      }
+    },
+    {
+      "id": "canon_sixteen_int",
+      "type": "FunctionNodeFloatToInt",
+      "location": [
+        1400,
+        350
+      ]
+    },
+    {
+      "id": "canon_two",
+      "type": "ShaderNodeMath",
+      "location": [
+        560,
+        140
+      ]
+    },
+    {
+      "id": "canon_two_int",
+      "type": "FunctionNodeFloatToInt",
+      "location": [
+        840,
+        -210
+      ]
+    },
+    {
+      "id": "canon_unity",
+      "type": "ShaderNodeMath",
+      "location": [
+        280,
+        0
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_wall",
+      "type": "ShaderNodeMath",
+      "location": [
+        560,
+        0
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_zero",
+      "type": "ShaderNodeMath",
+      "location": [
+        280,
+        -140
+      ],
+      "properties": {
+        "operation": "SUBTRACT"
+      }
+    },
+    {
+      "id": "column_grid",
+      "type": "GeometryNodeMeshGrid",
+      "location": [
+        1120,
+        -70
+      ]
+    },
+    {
+      "id": "column_lift",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        1120,
+        -210
+      ]
+    },
+    {
+      "id": "column_points",
+      "type": "GeometryNodeMeshToPoints",
+      "location": [
+        1400,
+        210
+      ]
+    },
+    {
+      "id": "column_sites",
+      "type": "GeometryNodeTransform",
+      "location": [
+        1680,
+        350
+      ]
+    },
+    {
+      "id": "columns",
+      "type": "GeometryNodeInstanceOnPoints",
+      "location": [
+        1960,
+        420
+      ]
+    },
+    {
+      "id": "empty",
+      "type": "GeometryNodeMeshCube",
+      "location": [
+        840,
+        -350
+      ]
+    },
+    {
+      "id": "empty_size",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        -140
+      ]
+    },
+    {
+      "id": "fallen_off",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        840,
+        -490
+      ]
+    },
+    {
+      "id": "figure",
+      "type": "GeometryNodeTransform",
+      "location": [
+        1960,
+        280
+      ]
+    },
+    {
+      "id": "figure_beside",
+      "type": "ShaderNodeMath",
+      "location": [
+        1120,
+        -350
+      ]
+    },
+    {
+      "id": "figure_hull",
+      "type": "GeometryNodeSetMaterial",
+      "location": [
+        2240,
+        280
+      ]
+    },
+    {
+      "id": "figure_loc",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        1680,
+        210
+      ]
+    },
+    {
+      "id": "figure_mesh",
+      "type": "GeometryNodeMeshCube",
+      "location": [
+        560,
+        -280
+      ]
+    },
+    {
+      "id": "figure_size",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        280,
+        -280
+      ]
+    },
+    {
+      "id": "figure_x",
+      "type": "ShaderNodeMath",
+      "location": [
+        1400,
+        70
+      ]
+    },
+    {
+      "id": "figure_z",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        -630
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "half_threshold",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        -770
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "has_debris",
+      "type": "FunctionNodeCompare",
+      "location": [
+        1120,
+        -490
+      ],
+      "properties": {
+        "operation": "GREATER_THAN"
+      }
+    },
+    {
+      "id": "has_scaffold",
+      "type": "FunctionNodeCompare",
+      "location": [
+        560,
+        -420
+      ],
+      "properties": {
+        "operation": "GREATER_THAN"
+      }
+    },
+    {
+      "id": "hatch",
+      "type": "GeometryNodeGroup",
+      "label": "HK Hatch",
+      "location": [
+        1680,
+        70
+      ],
+      "properties": {
+        "node_tree": "HK Hatch"
+      }
+    },
+    {
+      "id": "hatch_debris",
+      "type": "GeometryNodeSwitch",
+      "location": [
+        2240,
+        140
+      ]
+    },
+    {
+      "id": "hatch_drop",
+      "type": "ShaderNodeMath",
+      "location": [
+        280,
+        -420
+      ],
+      "properties": {
+        "operation": "MULTIPLY"
+      }
+    },
+    {
+      "id": "hatch_fallen",
+      "type": "GeometryNodeTransform",
+      "location": [
+        1960,
+        140
+      ]
+    },
+    {
+      "id": "hatch_gone",
+      "type": "FunctionNodeCompare",
+      "location": [
+        1120,
+        -630
+      ],
+      "properties": {
+        "operation": "GREATER_THAN"
+      }
+    },
+    {
+      "id": "hatch_intact",
+      "type": "GeometryNodeSwitch",
+      "location": [
+        1960,
+        0
+      ]
+    },
+    {
+      "id": "hatch_loc",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        1400,
+        -70
+      ]
+    },
+    {
+      "id": "hatch_state",
+      "type": "GeometryNodeJoinGeometry",
+      "location": [
+        2520,
+        210
+      ]
+    },
+    {
+      "id": "module",
+      "type": "GeometryNodeJoinGeometry",
+      "location": [
+        3080,
+        0
+      ]
+    },
+    {
+      "id": "neg_drop",
+      "type": "ShaderNodeMath",
+      "location": [
+        560,
+        -560
+      ],
+      "properties": {
+        "operation": "SUBTRACT"
+      }
+    },
+    {
+      "id": "realize",
+      "type": "GeometryNodeRealizeInstances",
+      "location": [
+        3360,
+        0
+      ]
+    },
+    {
+      "id": "scaffold_gate",
+      "type": "GeometryNodeSwitch",
+      "location": [
+        2520,
+        70
+      ]
+    },
+    {
+      "id": "scaffold_lift",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        1120,
+        -770
+      ]
+    },
+    {
+      "id": "scaffold_posts",
+      "type": "GeometryNodeInstanceOnPoints",
+      "location": [
+        2240,
+        0
+      ]
+    },
+    {
+      "id": "scaffold_pts",
+      "type": "GeometryNodeMeshToPoints",
+      "location": [
+        1680,
+        -70
+      ]
+    },
+    {
+      "id": "scaffold_ring",
+      "type": "GeometryNodeMeshCircle",
+      "location": [
+        1400,
+        -210
+      ]
+    },
+    {
+      "id": "scaffold_sites",
+      "type": "GeometryNodeTransform",
+      "location": [
+        1960,
+        -140
+      ]
+    },
+    {
+      "id": "truss_unit",
+      "type": "GeometryNodeGroup",
+      "label": "HK Truss",
+      "location": [
+        840,
+        -910
+      ],
+      "properties": {
+        "node_tree": "HK Truss"
+      }
+    },
+    {
+      "id": "x_ceil",
+      "type": "GeometryNodeTransform",
+      "location": [
+        2520,
+        -70
+      ]
+    },
+    {
+      "id": "x_floor",
+      "type": "GeometryNodeInstanceOnPoints",
+      "location": [
+        2240,
+        -140
+      ]
+    },
+    {
+      "id": "x_to_ceil",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        -700
+      ]
+    },
+    {
+      "id": "xbeam_line",
+      "type": "GeometryNodeMeshLine",
+      "location": [
+        1680,
+        -210
+      ]
+    },
+    {
+      "id": "xbeam_off",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        -840
+      ]
+    },
+    {
+      "id": "xbeam_pts",
+      "type": "GeometryNodeMeshToPoints",
+      "location": [
+        1960,
+        -280
+      ]
+    },
+    {
+      "id": "xbeam_start",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        1400,
+        -350
+      ]
+    },
+    {
+      "id": "y_ceil",
+      "type": "GeometryNodeTransform",
+      "location": [
+        2520,
+        -210
+      ]
+    },
+    {
+      "id": "y_floor",
+      "type": "GeometryNodeInstanceOnPoints",
+      "location": [
+        2240,
+        -280
+      ]
+    },
+    {
+      "id": "y_to_ceil",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        -980
+      ]
+    },
+    {
+      "id": "ybeam_line",
+      "type": "GeometryNodeMeshLine",
+      "location": [
+        1680,
+        -350
+      ]
+    },
+    {
+      "id": "ybeam_off",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        -1120
+      ]
+    },
+    {
+      "id": "ybeam_pts",
+      "type": "GeometryNodeMeshToPoints",
+      "location": [
+        1960,
+        -420
+      ]
+    },
+    {
+      "id": "ybeam_start",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        1400,
+        -490
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from": [
+        "Group Input",
+        "Airlock Diameter"
+      ],
+      "to": [
+        "airlock",
+        "Airlock Diameter"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Airlock Diameter"
+      ],
+      "to": [
+        "bay",
+        "Airlock Diameter"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Airlock Diameter"
+      ],
+      "to": [
+        "canon_radius",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Airlock Diameter"
+      ],
+      "to": [
+        "hatch",
+        "Airlock Diameter"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Airlock Diameter"
+      ],
+      "to": [
+        "truss_unit",
+        "Airlock Diameter"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Breach"
+      ],
+      "to": [
+        "hatch_gone",
+        "A"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Debris"
+      ],
+      "to": [
+        "has_debris",
+        "A"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Debris"
+      ],
+      "to": [
+        "hatch_drop",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "airlock",
+        "Deck Height"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "bay",
+        "Deck Height"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "canon_above_eye",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "canon_grids_per_deck",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "canon_half_deck",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "canon_overhead",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "column_grid",
+        "Size X"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "column_grid",
+        "Size Y"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "hatch",
+        "Deck Height"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "truss_unit",
+        "Deck Height"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "x_to_ceil",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "xbeam_off",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "y_to_ceil",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "ybeam_off",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Glass"
+      ],
+      "to": [
+        "airlock",
+        "Glass"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Glass"
+      ],
+      "to": [
+        "bay",
+        "Glass"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Glass"
+      ],
+      "to": [
+        "hatch",
+        "Glass"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Glass"
+      ],
+      "to": [
+        "truss_unit",
+        "Glass"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Hull"
+      ],
+      "to": [
+        "airlock",
+        "Hull"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Hull"
+      ],
+      "to": [
+        "bay",
+        "Hull"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Hull"
+      ],
+      "to": [
+        "figure_hull",
+        "Material"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Hull"
+      ],
+      "to": [
+        "hatch",
+        "Hull"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Hull"
+      ],
+      "to": [
+        "truss_unit",
+        "Hull"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Eye Height"
+      ],
+      "to": [
+        "airlock",
+        "Human Eye Height"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Eye Height"
+      ],
+      "to": [
+        "airlock_loc",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Eye Height"
+      ],
+      "to": [
+        "bay",
+        "Human Eye Height"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Eye Height"
+      ],
+      "to": [
+        "canon_above_eye",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Eye Height"
+      ],
+      "to": [
+        "hatch",
+        "Human Eye Height"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Eye Height"
+      ],
+      "to": [
+        "hatch_loc",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Eye Height"
+      ],
+      "to": [
+        "truss_unit",
+        "Human Eye Height"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Shoulder Width"
+      ],
+      "to": [
+        "airlock",
+        "Human Shoulder Width"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Shoulder Width"
+      ],
+      "to": [
+        "bay",
+        "Human Shoulder Width"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Shoulder Width"
+      ],
+      "to": [
+        "canon_half_shoulder",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Shoulder Width"
+      ],
+      "to": [
+        "canon_wall",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Shoulder Width"
+      ],
+      "to": [
+        "figure_size",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Shoulder Width"
+      ],
+      "to": [
+        "figure_size",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Shoulder Width"
+      ],
+      "to": [
+        "hatch",
+        "Human Shoulder Width"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Shoulder Width"
+      ],
+      "to": [
+        "truss_unit",
+        "Human Shoulder Width"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Standing Height"
+      ],
+      "to": [
+        "airlock",
+        "Human Standing Height"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Standing Height"
+      ],
+      "to": [
+        "bay",
+        "Human Standing Height"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Standing Height"
+      ],
+      "to": [
+        "canon_overhead",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Standing Height"
+      ],
+      "to": [
+        "figure_size",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Standing Height"
+      ],
+      "to": [
+        "figure_z",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Standing Height"
+      ],
+      "to": [
+        "hatch",
+        "Human Standing Height"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Standing Height"
+      ],
+      "to": [
+        "truss_unit",
+        "Human Standing Height"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Incomplete"
+      ],
+      "to": [
+        "bay_live",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "airlock",
+        "Meters Per Grid"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "bay",
+        "Meters Per Grid"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "canon_grids_per_deck",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "canon_half_grid",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "canon_unity",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "canon_unity",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "canon_zero",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "canon_zero",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "figure_beside",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "hatch",
+        "Meters Per Grid"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "hatch_drop",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "truss_unit",
+        "Meters Per Grid"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Scaffold"
+      ],
+      "to": [
+        "has_scaffold",
+        "A"
+      ]
+    },
+    {
+      "from": [
+        "airlock",
+        "Geometry"
+      ],
+      "to": [
+        "module",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "airlock_loc",
+        "Vector"
+      ],
+      "to": [
+        "airlock",
+        "Attach Location"
+      ]
+    },
+    {
+      "from": [
+        "bay",
+        "Geometry"
+      ],
+      "to": [
+        "bay_state",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "bay_live",
+        "Value"
+      ],
+      "to": [
+        "bay_scale",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "bay_scale",
+        "Vector"
+      ],
+      "to": [
+        "bay_state",
+        "Scale"
+      ]
+    },
+    {
+      "from": [
+        "bay_state",
+        "Geometry"
+      ],
+      "to": [
+        "module",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "beams",
+        "Geometry"
+      ],
+      "to": [
+        "module",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "canon_along_x",
+        "Vector"
+      ],
+      "to": [
+        "x_floor",
+        "Rotation"
+      ]
+    },
+    {
+      "from": [
+        "canon_along_y",
+        "Vector"
+      ],
+      "to": [
+        "y_floor",
+        "Rotation"
+      ]
+    },
+    {
+      "from": [
+        "canon_face_neg_y",
+        "Vector"
+      ],
+      "to": [
+        "hatch",
+        "Attach Rotation"
+      ]
+    },
+    {
+      "from": [
+        "canon_four",
+        "Value"
+      ],
+      "to": [
+        "canon_four_int",
+        "Float"
+      ]
+    },
+    {
+      "from": [
+        "canon_four",
+        "Value"
+      ],
+      "to": [
+        "canon_sixteen",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_four",
+        "Value"
+      ],
+      "to": [
+        "canon_sixteen",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_four_int",
+        "Integer"
+      ],
+      "to": [
+        "scaffold_ring",
+        "Vertices"
+      ]
+    },
+    {
+      "from": [
+        "canon_grids_per_deck",
+        "Value"
+      ],
+      "to": [
+        "canon_wall",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_deck",
+        "Value"
+      ],
+      "to": [
+        "airlock_loc",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_deck",
+        "Value"
+      ],
+      "to": [
+        "canon_neg_half_deck",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_deck",
+        "Value"
+      ],
+      "to": [
+        "column_lift",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_deck",
+        "Value"
+      ],
+      "to": [
+        "figure_beside",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_deck",
+        "Value"
+      ],
+      "to": [
+        "scaffold_lift",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_deck",
+        "Value"
+      ],
+      "to": [
+        "scaffold_ring",
+        "Radius"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_shoulder",
+        "Value"
+      ],
+      "to": [
+        "figure_x",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_wall",
+        "Value"
+      ],
+      "to": [
+        "canon_neg_half_wall",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_wall",
+        "Value"
+      ],
+      "to": [
+        "column_points",
+        "Radius"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_wall",
+        "Value"
+      ],
+      "to": [
+        "scaffold_pts",
+        "Radius"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_wall",
+        "Value"
+      ],
+      "to": [
+        "xbeam_pts",
+        "Radius"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_wall",
+        "Value"
+      ],
+      "to": [
+        "ybeam_pts",
+        "Radius"
+      ]
+    },
+    {
+      "from": [
+        "canon_identity_rot",
+        "Vector"
+      ],
+      "to": [
+        "airlock",
+        "Attach Rotation"
+      ]
+    },
+    {
+      "from": [
+        "canon_identity_rot",
+        "Vector"
+      ],
+      "to": [
+        "bay",
+        "Attach Rotation"
+      ]
+    },
+    {
+      "from": [
+        "canon_identity_rot",
+        "Vector"
+      ],
+      "to": [
+        "truss_unit",
+        "Attach Rotation"
+      ]
+    },
+    {
+      "from": [
+        "canon_neg_half_deck",
+        "Value"
+      ],
+      "to": [
+        "hatch_loc",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_neg_half_deck",
+        "Value"
+      ],
+      "to": [
+        "xbeam_start",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_neg_half_deck",
+        "Value"
+      ],
+      "to": [
+        "ybeam_start",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_neg_unity",
+        "Value"
+      ],
+      "to": [
+        "canon_neg_half_deck",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_neg_unity",
+        "Value"
+      ],
+      "to": [
+        "canon_neg_half_wall",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_origin",
+        "Vector"
+      ],
+      "to": [
+        "bay",
+        "Attach Location"
+      ]
+    },
+    {
+      "from": [
+        "canon_origin",
+        "Vector"
+      ],
+      "to": [
+        "truss_unit",
+        "Attach Location"
+      ]
+    },
+    {
+      "from": [
+        "canon_sixteen",
+        "Value"
+      ],
+      "to": [
+        "canon_sixteen_int",
+        "Float"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_four",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_four",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_half_deck",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_half_grid",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_half_shoulder",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_half_wall",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_radius",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_two_int",
+        "Float"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "figure_z",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "half_threshold",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two_int",
+        "Integer"
+      ],
+      "to": [
+        "column_grid",
+        "Vertices X"
+      ]
+    },
+    {
+      "from": [
+        "canon_two_int",
+        "Integer"
+      ],
+      "to": [
+        "column_grid",
+        "Vertices Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_two_int",
+        "Integer"
+      ],
+      "to": [
+        "xbeam_line",
+        "Count"
+      ]
+    },
+    {
+      "from": [
+        "canon_two_int",
+        "Integer"
+      ],
+      "to": [
+        "ybeam_line",
+        "Count"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "airlock",
+        "Scale"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "bay",
+        "Scale"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "bay_live",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "bay_scale",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "bay_scale",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "canon_neg_unity",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "canon_two",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "canon_two",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "half_threshold",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "hatch",
+        "Scale"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "truss_unit",
+        "Scale"
+      ]
+    },
+    {
+      "from": [
+        "canon_wall",
+        "Value"
+      ],
+      "to": [
+        "canon_half_wall",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "airlock_loc",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_along_x",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_along_x",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_along_y",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_along_y",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_face_neg_y",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_face_neg_y",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_identity_rot",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_identity_rot",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_identity_rot",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_neg_unity",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_origin",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_origin",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_origin",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "column_lift",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "column_lift",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "empty_size",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "empty_size",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "empty_size",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "fallen_off",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "fallen_off",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "figure_loc",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "has_scaffold",
+        "B"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "hatch_loc",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "neg_drop",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "scaffold_lift",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "scaffold_lift",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "x_to_ceil",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "x_to_ceil",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "xbeam_off",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "xbeam_off",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "xbeam_start",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "xbeam_start",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "y_to_ceil",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "y_to_ceil",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "ybeam_off",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "ybeam_off",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "ybeam_start",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "ybeam_start",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "column_grid",
+        "Mesh"
+      ],
+      "to": [
+        "column_points",
+        "Mesh"
+      ]
+    },
+    {
+      "from": [
+        "column_lift",
+        "Vector"
+      ],
+      "to": [
+        "column_sites",
+        "Translation"
+      ]
+    },
+    {
+      "from": [
+        "column_points",
+        "Points"
+      ],
+      "to": [
+        "column_sites",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "column_sites",
+        "Geometry"
+      ],
+      "to": [
+        "columns",
+        "Points"
+      ]
+    },
+    {
+      "from": [
+        "columns",
+        "Instances"
+      ],
+      "to": [
+        "module",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "empty",
+        "Mesh"
+      ],
+      "to": [
+        "hatch_debris",
+        "False"
+      ]
+    },
+    {
+      "from": [
+        "empty",
+        "Mesh"
+      ],
+      "to": [
+        "hatch_intact",
+        "True"
+      ]
+    },
+    {
+      "from": [
+        "empty",
+        "Mesh"
+      ],
+      "to": [
+        "scaffold_gate",
+        "False"
+      ]
+    },
+    {
+      "from": [
+        "empty_size",
+        "Vector"
+      ],
+      "to": [
+        "empty",
+        "Size"
+      ]
+    },
+    {
+      "from": [
+        "fallen_off",
+        "Vector"
+      ],
+      "to": [
+        "hatch_fallen",
+        "Translation"
+      ]
+    },
+    {
+      "from": [
+        "figure",
+        "Geometry"
+      ],
+      "to": [
+        "figure_hull",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "figure_beside",
+        "Value"
+      ],
+      "to": [
+        "figure_x",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "figure_hull",
+        "Geometry"
+      ],
+      "to": [
+        "module",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "figure_loc",
+        "Vector"
+      ],
+      "to": [
+        "figure",
+        "Translation"
+      ]
+    },
+    {
+      "from": [
+        "figure_mesh",
+        "Mesh"
+      ],
+      "to": [
+        "figure",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "figure_size",
+        "Vector"
+      ],
+      "to": [
+        "figure_mesh",
+        "Size"
+      ]
+    },
+    {
+      "from": [
+        "figure_x",
+        "Value"
+      ],
+      "to": [
+        "figure_loc",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "figure_z",
+        "Value"
+      ],
+      "to": [
+        "figure_loc",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "half_threshold",
+        "Value"
+      ],
+      "to": [
+        "has_debris",
+        "B"
+      ]
+    },
+    {
+      "from": [
+        "half_threshold",
+        "Value"
+      ],
+      "to": [
+        "hatch_gone",
+        "B"
+      ]
+    },
+    {
+      "from": [
+        "has_debris",
+        "Result"
+      ],
+      "to": [
+        "hatch_debris",
+        "Switch"
+      ]
+    },
+    {
+      "from": [
+        "has_scaffold",
+        "Result"
+      ],
+      "to": [
+        "scaffold_gate",
+        "Switch"
+      ]
+    },
+    {
+      "from": [
+        "hatch",
+        "Geometry"
+      ],
+      "to": [
+        "hatch_fallen",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "hatch",
+        "Geometry"
+      ],
+      "to": [
+        "hatch_intact",
+        "False"
+      ]
+    },
+    {
+      "from": [
+        "hatch_debris",
+        "Output"
+      ],
+      "to": [
+        "hatch_state",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "hatch_drop",
+        "Value"
+      ],
+      "to": [
+        "neg_drop",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "hatch_fallen",
+        "Geometry"
+      ],
+      "to": [
+        "hatch_debris",
+        "True"
+      ]
+    },
+    {
+      "from": [
+        "hatch_gone",
+        "Result"
+      ],
+      "to": [
+        "hatch_intact",
+        "Switch"
+      ]
+    },
+    {
+      "from": [
+        "hatch_intact",
+        "Output"
+      ],
+      "to": [
+        "hatch_state",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "hatch_loc",
+        "Vector"
+      ],
+      "to": [
+        "hatch",
+        "Attach Location"
+      ]
+    },
+    {
+      "from": [
+        "hatch_state",
+        "Geometry"
+      ],
+      "to": [
+        "module",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "module",
+        "Geometry"
+      ],
+      "to": [
+        "realize",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "neg_drop",
+        "Value"
+      ],
+      "to": [
+        "fallen_off",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "realize",
+        "Geometry"
+      ],
+      "to": [
+        "Group Output",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "scaffold_gate",
+        "Output"
+      ],
+      "to": [
+        "module",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "scaffold_lift",
+        "Vector"
+      ],
+      "to": [
+        "scaffold_sites",
+        "Translation"
+      ]
+    },
+    {
+      "from": [
+        "scaffold_posts",
+        "Instances"
+      ],
+      "to": [
+        "scaffold_gate",
+        "True"
+      ]
+    },
+    {
+      "from": [
+        "scaffold_pts",
+        "Points"
+      ],
+      "to": [
+        "scaffold_sites",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "scaffold_ring",
+        "Mesh"
+      ],
+      "to": [
+        "scaffold_pts",
+        "Mesh"
+      ]
+    },
+    {
+      "from": [
+        "scaffold_sites",
+        "Geometry"
+      ],
+      "to": [
+        "scaffold_posts",
+        "Points"
+      ]
+    },
+    {
+      "from": [
+        "truss_unit",
+        "Geometry"
+      ],
+      "to": [
+        "columns",
+        "Instance"
+      ]
+    },
+    {
+      "from": [
+        "truss_unit",
+        "Geometry"
+      ],
+      "to": [
+        "scaffold_posts",
+        "Instance"
+      ]
+    },
+    {
+      "from": [
+        "truss_unit",
+        "Geometry"
+      ],
+      "to": [
+        "x_floor",
+        "Instance"
+      ]
+    },
+    {
+      "from": [
+        "truss_unit",
+        "Geometry"
+      ],
+      "to": [
+        "y_floor",
+        "Instance"
+      ]
+    },
+    {
+      "from": [
+        "x_ceil",
+        "Geometry"
+      ],
+      "to": [
+        "beams",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "x_floor",
+        "Instances"
+      ],
+      "to": [
+        "beams",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "x_floor",
+        "Instances"
+      ],
+      "to": [
+        "x_ceil",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "x_to_ceil",
+        "Vector"
+      ],
+      "to": [
+        "x_ceil",
+        "Translation"
+      ]
+    },
+    {
+      "from": [
+        "xbeam_line",
+        "Mesh"
+      ],
+      "to": [
+        "xbeam_pts",
+        "Mesh"
+      ]
+    },
+    {
+      "from": [
+        "xbeam_off",
+        "Vector"
+      ],
+      "to": [
+        "xbeam_line",
+        "Offset"
+      ]
+    },
+    {
+      "from": [
+        "xbeam_pts",
+        "Points"
+      ],
+      "to": [
+        "x_floor",
+        "Points"
+      ]
+    },
+    {
+      "from": [
+        "xbeam_start",
+        "Vector"
+      ],
+      "to": [
+        "xbeam_line",
+        "Start Location"
+      ]
+    },
+    {
+      "from": [
+        "y_ceil",
+        "Geometry"
+      ],
+      "to": [
+        "beams",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "y_floor",
+        "Instances"
+      ],
+      "to": [
+        "beams",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "y_floor",
+        "Instances"
+      ],
+      "to": [
+        "y_ceil",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "y_to_ceil",
+        "Vector"
+      ],
+      "to": [
+        "y_ceil",
+        "Translation"
+      ]
+    },
+    {
+      "from": [
+        "ybeam_line",
+        "Mesh"
+      ],
+      "to": [
+        "ybeam_pts",
+        "Mesh"
+      ]
+    },
+    {
+      "from": [
+        "ybeam_off",
+        "Vector"
+      ],
+      "to": [
+        "ybeam_line",
+        "Offset"
+      ]
+    },
+    {
+      "from": [
+        "ybeam_pts",
+        "Points"
+      ],
+      "to": [
+        "y_floor",
+        "Points"
+      ]
+    },
+    {
+      "from": [
+        "ybeam_start",
+        "Vector"
+      ],
+      "to": [
+        "ybeam_line",
+        "Start Location"
+      ]
+    }
+  ]
+}
