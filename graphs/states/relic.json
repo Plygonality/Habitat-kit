@@ -1,0 +1,23 @@
+{
+  "format": "habitat-kit-state",
+  "version": 1,
+  "id": "relic",
+  "epoch": "relic",
+  "label": "relic",
+  "folder": "screenshots/relic",
+  "seed": 1234,
+  "source": "time_slice.EPOCHS",
+  "sockets": {
+    "Amount": 0.8523,
+    "Incomplete": 0.166,
+    "Scaffold": 0.0144,
+    "Oxidation": 0.8724,
+    "Breach": 0.6579,
+    "Debris": 0.7387,
+    "Density": 0.2009,
+    "Coherence": 0.4042,
+    "Amplitude": 0.259,
+    "Wavelength": 0.8542,
+    "Ghost": 0.8895
+  }
+}

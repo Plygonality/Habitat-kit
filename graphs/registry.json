@@ -1,0 +1,351 @@
+{
+  "format": "habitat-kit-registry",
+  "version": 1,
+  "interface_version": 1,
+  "constraint": "Every length comes from Unit-canon (meters_per_grid 1.0, deck 3.0, airlock 1.0, figure 1.80); no magic numbers in graphs.",
+  "blender": "4.2",
+  "generator": {
+    "id": "habitat_module",
+    "name": "HK Habitat Module",
+    "label": "Habitat module",
+    "description": "One Geometry Nodes generator. Instances airlock, deck bay, truss, and hatch into a brutalist / industrial habitat module.",
+    "kind": "MODIFIER",
+    "blender": "4.2",
+    "actors": [
+      "airlock",
+      "deck_bay",
+      "truss",
+      "hatch"
+    ],
+    "canon_inputs": [
+      "Meters Per Grid",
+      "Deck Height",
+      "Airlock Diameter",
+      "Human Standing Height",
+      "Human Eye Height",
+      "Human Shoulder Width"
+    ],
+    "epoch_inputs": [
+      "Amount",
+      "Incomplete",
+      "Scaffold",
+      "Oxidation",
+      "Breach",
+      "Debris",
+      "Density",
+      "Coherence",
+      "Amplitude",
+      "Wavelength",
+      "Ghost"
+    ],
+    "states": [
+      "construction",
+      "operational",
+      "relic"
+    ]
+  },
+  "states": [
+    "construction",
+    "operational",
+    "relic"
+  ],
+  "epochs": "time_slice.EPOCHS",
+  "shared": {
+    "inputs": [
+      "Scale",
+      "Attach Location",
+      "Attach Rotation",
+      "Hull",
+      "Glass",
+      "Meters Per Grid",
+      "Deck Height",
+      "Airlock Diameter",
+      "Human Standing Height",
+      "Human Eye Height",
+      "Human Shoulder Width"
+    ],
+    "outputs": [
+      "Geometry",
+      "Attach"
+    ]
+  },
+  "materials": [
+    {
+      "socket": "Hull",
+      "master_category": "metal",
+      "tree": "MN Metal",
+      "preset": "metal.brushed_aluminum",
+      "description": "Conductor hull, radiator, legs, thrusters."
+    },
+    {
+      "socket": "Glass",
+      "master_category": "glass",
+      "tree": "MN Glass",
+      "preset": "glass.clear",
+      "description": "Canopy, sensor dome, viewport."
+    }
+  ],
+  "groups": [
+    {
+      "id": "airlock",
+      "name": "HK Airlock",
+      "label": "Airlock",
+      "description": "Circular airlock tube. Diameter and depth from Unit-canon.",
+      "kind": "GROUP",
+      "blender": "4.2",
+      "scatter": "later",
+      "scale_socket": "Scale",
+      "attach": [
+        {
+          "name": "Attach",
+          "role": "dock",
+          "space": "world",
+          "description": "Tube center. Plant on a hull face.",
+          "local": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Dock Attach",
+          "role": "dock_outer",
+          "space": "local",
+          "description": "Outer rim along +Y. Local offset, already scaled."
+        }
+      ],
+      "materials": [
+        {
+          "socket": "Hull",
+          "master_category": "metal",
+          "tree": "MN Metal",
+          "preset": "metal.brushed_aluminum",
+          "description": "Conductor hull, radiator, legs, thrusters."
+        },
+        {
+          "socket": "Glass",
+          "master_category": "glass",
+          "tree": "MN Glass",
+          "preset": "glass.clear",
+          "description": "Canopy, sensor dome, viewport."
+        }
+      ],
+      "interface": {
+        "inputs": [
+          "Scale",
+          "Attach Location",
+          "Attach Rotation",
+          "Hull",
+          "Glass",
+          "Meters Per Grid",
+          "Deck Height",
+          "Airlock Diameter",
+          "Human Standing Height",
+          "Human Eye Height",
+          "Human Shoulder Width"
+        ],
+        "outputs": [
+          "Geometry",
+          "Attach",
+          "Dock Attach"
+        ]
+      }
+    },
+    {
+      "id": "deck_bay",
+      "name": "HK Deck Bay",
+      "label": "Deck bay",
+      "description": "One-deck habitat bay. Span equals Unit-canon deck height.",
+      "kind": "GROUP",
+      "blender": "4.2",
+      "scatter": "later",
+      "scale_socket": "Scale",
+      "attach": [
+        {
+          "name": "Attach",
+          "role": "floor",
+          "space": "world",
+          "description": "Floor center. Origin of the bay.",
+          "local": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Deck Attach",
+          "role": "deck",
+          "space": "local",
+          "description": "Floor plane. Local origin, already scaled."
+        }
+      ],
+      "materials": [
+        {
+          "socket": "Hull",
+          "master_category": "metal",
+          "tree": "MN Metal",
+          "preset": "metal.brushed_aluminum",
+          "description": "Conductor hull, radiator, legs, thrusters."
+        },
+        {
+          "socket": "Glass",
+          "master_category": "glass",
+          "tree": "MN Glass",
+          "preset": "glass.clear",
+          "description": "Canopy, sensor dome, viewport."
+        }
+      ],
+      "interface": {
+        "inputs": [
+          "Scale",
+          "Attach Location",
+          "Attach Rotation",
+          "Hull",
+          "Glass",
+          "Meters Per Grid",
+          "Deck Height",
+          "Airlock Diameter",
+          "Human Standing Height",
+          "Human Eye Height",
+          "Human Shoulder Width"
+        ],
+        "outputs": [
+          "Geometry",
+          "Attach",
+          "Deck Attach"
+        ]
+      }
+    },
+    {
+      "id": "truss",
+      "name": "HK Truss",
+      "label": "Truss",
+      "description": "Structural member one deck long. Section from Unit-canon.",
+      "kind": "GROUP",
+      "blender": "4.2",
+      "scatter": "later",
+      "scale_socket": "Scale",
+      "attach": [
+        {
+          "name": "Attach",
+          "role": "centroid",
+          "space": "world",
+          "description": "Member centroid.",
+          "local": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "End Attach",
+          "role": "end",
+          "space": "local",
+          "description": "+Z end cap. Local offset, already scaled."
+        }
+      ],
+      "materials": [
+        {
+          "socket": "Hull",
+          "master_category": "metal",
+          "tree": "MN Metal",
+          "preset": "metal.brushed_aluminum",
+          "description": "Conductor hull, radiator, legs, thrusters."
+        },
+        {
+          "socket": "Glass",
+          "master_category": "glass",
+          "tree": "MN Glass",
+          "preset": "glass.clear",
+          "description": "Canopy, sensor dome, viewport."
+        }
+      ],
+      "interface": {
+        "inputs": [
+          "Scale",
+          "Attach Location",
+          "Attach Rotation",
+          "Hull",
+          "Glass",
+          "Meters Per Grid",
+          "Deck Height",
+          "Airlock Diameter",
+          "Human Standing Height",
+          "Human Eye Height",
+          "Human Shoulder Width"
+        ],
+        "outputs": [
+          "Geometry",
+          "Attach",
+          "End Attach"
+        ]
+      }
+    },
+    {
+      "id": "hatch",
+      "name": "HK Hatch",
+      "label": "Hatch",
+      "description": "Circular hatch. Clear opening is the Unit-canon airlock diameter.",
+      "kind": "GROUP",
+      "blender": "4.2",
+      "scatter": "later",
+      "scale_socket": "Scale",
+      "attach": [
+        {
+          "name": "Attach",
+          "role": "panel",
+          "space": "world",
+          "description": "Hatch center. Plant on a hull face.",
+          "local": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Hatch Attach",
+          "role": "hatch",
+          "space": "local",
+          "description": "Panel center. Local origin, already scaled."
+        }
+      ],
+      "materials": [
+        {
+          "socket": "Hull",
+          "master_category": "metal",
+          "tree": "MN Metal",
+          "preset": "metal.brushed_aluminum",
+          "description": "Conductor hull, radiator, legs, thrusters."
+        },
+        {
+          "socket": "Glass",
+          "master_category": "glass",
+          "tree": "MN Glass",
+          "preset": "glass.clear",
+          "description": "Canopy, sensor dome, viewport."
+        }
+      ],
+      "interface": {
+        "inputs": [
+          "Scale",
+          "Attach Location",
+          "Attach Rotation",
+          "Hull",
+          "Glass",
+          "Meters Per Grid",
+          "Deck Height",
+          "Airlock Diameter",
+          "Human Standing Height",
+          "Human Eye Height",
+          "Human Shoulder Width"
+        ],
+        "outputs": [
+          "Geometry",
+          "Attach",
+          "Hatch Attach"
+        ]
+      }
+    }
+  ],
+  "kind": "GROUP"
+}

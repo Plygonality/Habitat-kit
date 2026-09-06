@@ -1,0 +1,23 @@
+{
+  "format": "habitat-kit-state",
+  "version": 1,
+  "id": "operational",
+  "epoch": "operational",
+  "label": "operational",
+  "folder": "screenshots/operational",
+  "seed": 1234,
+  "source": "time_slice.EPOCHS",
+  "sockets": {
+    "Amount": 0.1715,
+    "Incomplete": 0.0107,
+    "Scaffold": 0.0,
+    "Oxidation": 0.1073,
+    "Breach": 0.0038,
+    "Debris": 0.0866,
+    "Density": 0.7367,
+    "Coherence": 0.8303,
+    "Amplitude": 0.7108,
+    "Wavelength": 0.5838,
+    "Ghost": 0.0986
+  }
+}

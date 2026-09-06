@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "habitat-kit"
+version = "0.1.0"
+description = "One Geometry Nodes habitat generator. Lengths from Unit-canon. Actors from Probe-kit. States from Time-slice."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+authors = [{ name = "Plygonality" }]
+keywords = ["blender", "geometry-nodes", "procedural", "tech-art", "hard-scifi"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Graphics :: 3D Modeling",
+]
+dependencies = [
+    "gn-as-code @ git+https://github.com/Plygonality/gn-as-code.git",
+    "probe-kit @ git+https://github.com/Plygonality/Probe-kit.git",
+    "unit-canon @ git+https://github.com/Plygonality/Unit-canon.git",
+    "time-slice @ git+https://github.com/Plygonality/Time-slice.git",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4", "ruff>=0.6"]
+
+[project.scripts]
+habitat-kit = "habitat_kit.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Plygonality/Habitat-kit"
+gn-as-code = "https://github.com/Plygonality/gn-as-code"
+Probe-kit = "https://github.com/Plygonality/Probe-kit"
+Unit-canon = "https://github.com/Plygonality/Unit-canon"
+Time-slice = "https://github.com/Plygonality/Time-slice"
+Plygon-mcp = "https://github.com/Plygonality/Plygon-mcp"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+habitat_kit = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]

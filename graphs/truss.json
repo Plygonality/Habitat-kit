@@ -1,0 +1,1398 @@
+{
+  "format": "gn-as-code",
+  "version": 1,
+  "name": "HK Truss",
+  "kind": "GROUP",
+  "blender": "4.2",
+  "interface": {
+    "inputs": [
+      {
+        "name": "Scale",
+        "socket": "FLOAT",
+        "default": 1,
+        "min": 0.01,
+        "max": 50,
+        "description": "Uniform actor scale around the primary attach origin"
+      },
+      {
+        "name": "Attach Location",
+        "socket": "VECTOR",
+        "default": [
+          0,
+          0,
+          0
+        ],
+        "description": "World position of the primary attach (feet, dock, centroid)"
+      },
+      {
+        "name": "Attach Rotation",
+        "socket": "VECTOR",
+        "default": [
+          0,
+          0,
+          0
+        ],
+        "description": "Euler XYZ in radians. Z-up, Y-forward."
+      },
+      {
+        "name": "Hull",
+        "socket": "MATERIAL",
+        "description": "Master-Node metal (MN Metal). Bind a category master, not a unique shader."
+      },
+      {
+        "name": "Glass",
+        "socket": "MATERIAL",
+        "description": "Master-Node glass (MN Glass). Canopy / dome / viewport."
+      },
+      {
+        "name": "Meters Per Grid",
+        "socket": "FLOAT",
+        "default": 1,
+        "min": 0,
+        "subtype": "DISTANCE",
+        "description": "World-grid spacing. GN snap, array pitch, collection-linter grid."
+      },
+      {
+        "name": "Deck Height",
+        "socket": "FLOAT",
+        "default": 3,
+        "min": 0,
+        "subtype": "DISTANCE",
+        "description": "Floor-to-floor spacing. Integer multiple of meters per grid."
+      },
+      {
+        "name": "Airlock Diameter",
+        "socket": "FLOAT",
+        "default": 1,
+        "min": 0,
+        "subtype": "DISTANCE",
+        "description": "Clear circular hatch / tube diameter."
+      },
+      {
+        "name": "Human Standing Height",
+        "socket": "FLOAT",
+        "default": 1.8,
+        "min": 0,
+        "subtype": "DISTANCE",
+        "description": "Scale-reference figure height (UE5 mannequin class)."
+      },
+      {
+        "name": "Human Eye Height",
+        "socket": "FLOAT",
+        "default": 1.65,
+        "min": 0,
+        "subtype": "DISTANCE",
+        "description": "Camera / occupancy eye line on the scale figure."
+      },
+      {
+        "name": "Human Shoulder Width",
+        "socket": "FLOAT",
+        "default": 0.45,
+        "min": 0,
+        "subtype": "DISTANCE",
+        "description": "Figure breadth; must pass through the airlock."
+      }
+    ],
+    "outputs": [
+      {
+        "name": "Geometry",
+        "socket": "GEOMETRY"
+      },
+      {
+        "name": "Attach",
+        "socket": "VECTOR"
+      },
+      {
+        "name": "End Attach",
+        "socket": "VECTOR"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "Group Input",
+      "type": "NodeGroupInput",
+      "location": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": "Group Output",
+      "type": "NodeGroupOutput",
+      "location": [
+        3080,
+        0
+      ]
+    },
+    {
+      "id": "assign_hull",
+      "type": "GeometryNodeSetMaterial",
+      "location": [
+        2520,
+        0
+      ]
+    },
+    {
+      "id": "canon_above_eye",
+      "type": "ShaderNodeMath",
+      "location": [
+        280,
+        350
+      ],
+      "properties": {
+        "operation": "SUBTRACT"
+      }
+    },
+    {
+      "id": "canon_along_x",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        490
+      ],
+      "inputs": {
+        "Y": 1.570796
+      }
+    },
+    {
+      "id": "canon_along_y",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        350
+      ],
+      "inputs": {
+        "X": 1.570796
+      }
+    },
+    {
+      "id": "canon_face_neg_y",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        210
+      ],
+      "inputs": {
+        "Z": 3.141593
+      }
+    },
+    {
+      "id": "canon_four",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        490
+      ]
+    },
+    {
+      "id": "canon_four_int",
+      "type": "FunctionNodeFloatToInt",
+      "location": [
+        1120,
+        490
+      ]
+    },
+    {
+      "id": "canon_grids_per_deck",
+      "type": "ShaderNodeMath",
+      "location": [
+        280,
+        210
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_half_deck",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        350
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_half_grid",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        210
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_half_shoulder",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        70
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_half_wall",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        -70
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_identity_rot",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        70
+      ]
+    },
+    {
+      "id": "canon_neg_half_deck",
+      "type": "ShaderNodeMath",
+      "location": [
+        1120,
+        350
+      ],
+      "properties": {
+        "operation": "MULTIPLY"
+      }
+    },
+    {
+      "id": "canon_neg_half_wall",
+      "type": "ShaderNodeMath",
+      "location": [
+        1120,
+        210
+      ],
+      "properties": {
+        "operation": "MULTIPLY"
+      }
+    },
+    {
+      "id": "canon_neg_unity",
+      "type": "ShaderNodeMath",
+      "location": [
+        560,
+        -70
+      ],
+      "properties": {
+        "operation": "SUBTRACT"
+      }
+    },
+    {
+      "id": "canon_origin",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        560,
+        -210
+      ]
+    },
+    {
+      "id": "canon_overhead",
+      "type": "ShaderNodeMath",
+      "location": [
+        280,
+        70
+      ],
+      "properties": {
+        "operation": "SUBTRACT"
+      }
+    },
+    {
+      "id": "canon_radius",
+      "type": "ShaderNodeMath",
+      "location": [
+        840,
+        -210
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_sixteen",
+      "type": "ShaderNodeMath",
+      "location": [
+        1120,
+        70
+      ],
+      "properties": {
+        "operation": "MULTIPLY"
+      }
+    },
+    {
+      "id": "canon_sixteen_int",
+      "type": "FunctionNodeFloatToInt",
+      "location": [
+        1400,
+        210
+      ]
+    },
+    {
+      "id": "canon_two",
+      "type": "ShaderNodeMath",
+      "location": [
+        560,
+        -350
+      ]
+    },
+    {
+      "id": "canon_two_int",
+      "type": "FunctionNodeFloatToInt",
+      "location": [
+        840,
+        -350
+      ]
+    },
+    {
+      "id": "canon_unity",
+      "type": "ShaderNodeMath",
+      "location": [
+        280,
+        -70
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_wall",
+      "type": "ShaderNodeMath",
+      "location": [
+        560,
+        -490
+      ],
+      "properties": {
+        "operation": "DIVIDE"
+      }
+    },
+    {
+      "id": "canon_zero",
+      "type": "ShaderNodeMath",
+      "location": [
+        280,
+        -210
+      ],
+      "properties": {
+        "operation": "SUBTRACT"
+      }
+    },
+    {
+      "id": "cap_a",
+      "type": "GeometryNodeTransform",
+      "location": [
+        1400,
+        70
+      ]
+    },
+    {
+      "id": "cap_a_loc",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        1120,
+        -70
+      ]
+    },
+    {
+      "id": "cap_a_mesh",
+      "type": "GeometryNodeMeshCube",
+      "location": [
+        1120,
+        -210
+      ]
+    },
+    {
+      "id": "cap_b",
+      "type": "GeometryNodeTransform",
+      "location": [
+        1680,
+        70
+      ]
+    },
+    {
+      "id": "cap_b_loc",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        1400,
+        -70
+      ]
+    },
+    {
+      "id": "cap_b_mesh",
+      "type": "GeometryNodeMeshCube",
+      "location": [
+        1120,
+        -350
+      ]
+    },
+    {
+      "id": "cap_size",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        840,
+        -490
+      ]
+    },
+    {
+      "id": "end_attach_scaled",
+      "type": "ShaderNodeVectorMath",
+      "location": [
+        1400,
+        -210
+      ],
+      "properties": {
+        "operation": "SCALE"
+      }
+    },
+    {
+      "id": "end_local",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        1120,
+        -490
+      ]
+    },
+    {
+      "id": "hull",
+      "type": "GeometryNodeJoinGeometry",
+      "location": [
+        2240,
+        0
+      ]
+    },
+    {
+      "id": "place",
+      "type": "GeometryNodeTransform",
+      "location": [
+        2800,
+        0
+      ]
+    },
+    {
+      "id": "scale_vec",
+      "type": "ShaderNodeCombineXYZ",
+      "location": [
+        280,
+        -350
+      ]
+    },
+    {
+      "id": "shaft",
+      "type": "GeometryNodeTransform",
+      "location": [
+        1960,
+        0
+      ]
+    },
+    {
+      "id": "shaft_mesh",
+      "type": "GeometryNodeMeshCylinder",
+      "location": [
+        1680,
+        -70
+      ]
+    }
+  ],
+  "links": [
+    {
+      "from": [
+        "Group Input",
+        "Airlock Diameter"
+      ],
+      "to": [
+        "canon_radius",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Attach Location"
+      ],
+      "to": [
+        "Group Output",
+        "Attach"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Attach Location"
+      ],
+      "to": [
+        "place",
+        "Translation"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Attach Rotation"
+      ],
+      "to": [
+        "place",
+        "Rotation"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "canon_above_eye",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "canon_grids_per_deck",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "canon_half_deck",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "canon_overhead",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Deck Height"
+      ],
+      "to": [
+        "shaft_mesh",
+        "Depth"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Hull"
+      ],
+      "to": [
+        "assign_hull",
+        "Material"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Eye Height"
+      ],
+      "to": [
+        "canon_above_eye",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Shoulder Width"
+      ],
+      "to": [
+        "canon_half_shoulder",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Shoulder Width"
+      ],
+      "to": [
+        "canon_wall",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Human Standing Height"
+      ],
+      "to": [
+        "canon_overhead",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "canon_grids_per_deck",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "canon_half_grid",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "canon_unity",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "canon_unity",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "canon_zero",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Meters Per Grid"
+      ],
+      "to": [
+        "canon_zero",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Scale"
+      ],
+      "to": [
+        "end_attach_scaled",
+        "Scale"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Scale"
+      ],
+      "to": [
+        "scale_vec",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Scale"
+      ],
+      "to": [
+        "scale_vec",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "Group Input",
+        "Scale"
+      ],
+      "to": [
+        "scale_vec",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "assign_hull",
+        "Geometry"
+      ],
+      "to": [
+        "place",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "canon_four",
+        "Value"
+      ],
+      "to": [
+        "canon_four_int",
+        "Float"
+      ]
+    },
+    {
+      "from": [
+        "canon_four",
+        "Value"
+      ],
+      "to": [
+        "canon_sixteen",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_four",
+        "Value"
+      ],
+      "to": [
+        "canon_sixteen",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_grids_per_deck",
+        "Value"
+      ],
+      "to": [
+        "canon_wall",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_deck",
+        "Value"
+      ],
+      "to": [
+        "canon_neg_half_deck",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_deck",
+        "Value"
+      ],
+      "to": [
+        "cap_a_loc",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_deck",
+        "Value"
+      ],
+      "to": [
+        "end_local",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_wall",
+        "Value"
+      ],
+      "to": [
+        "canon_neg_half_wall",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_half_wall",
+        "Value"
+      ],
+      "to": [
+        "shaft_mesh",
+        "Radius"
+      ]
+    },
+    {
+      "from": [
+        "canon_neg_half_deck",
+        "Value"
+      ],
+      "to": [
+        "cap_b_loc",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_neg_unity",
+        "Value"
+      ],
+      "to": [
+        "canon_neg_half_deck",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_neg_unity",
+        "Value"
+      ],
+      "to": [
+        "canon_neg_half_wall",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_origin",
+        "Vector"
+      ],
+      "to": [
+        "shaft",
+        "Translation"
+      ]
+    },
+    {
+      "from": [
+        "canon_sixteen",
+        "Value"
+      ],
+      "to": [
+        "canon_sixteen_int",
+        "Float"
+      ]
+    },
+    {
+      "from": [
+        "canon_sixteen_int",
+        "Integer"
+      ],
+      "to": [
+        "shaft_mesh",
+        "Vertices"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_four",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_four",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_half_deck",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_half_grid",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_half_shoulder",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_half_wall",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_radius",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_two",
+        "Value"
+      ],
+      "to": [
+        "canon_two_int",
+        "Float"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "canon_neg_unity",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "canon_two",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_unity",
+        "Value"
+      ],
+      "to": [
+        "canon_two",
+        "Value_001"
+      ]
+    },
+    {
+      "from": [
+        "canon_wall",
+        "Value"
+      ],
+      "to": [
+        "canon_half_wall",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_wall",
+        "Value"
+      ],
+      "to": [
+        "cap_size",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_wall",
+        "Value"
+      ],
+      "to": [
+        "cap_size",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_wall",
+        "Value"
+      ],
+      "to": [
+        "cap_size",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_along_x",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_along_x",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_along_y",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_along_y",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_face_neg_y",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_face_neg_y",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_identity_rot",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_identity_rot",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_identity_rot",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_neg_unity",
+        "Value"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_origin",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_origin",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "canon_origin",
+        "Z"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "cap_a_loc",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "cap_a_loc",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "cap_b_loc",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "cap_b_loc",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "end_local",
+        "X"
+      ]
+    },
+    {
+      "from": [
+        "canon_zero",
+        "Value"
+      ],
+      "to": [
+        "end_local",
+        "Y"
+      ]
+    },
+    {
+      "from": [
+        "cap_a",
+        "Geometry"
+      ],
+      "to": [
+        "hull",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "cap_a_loc",
+        "Vector"
+      ],
+      "to": [
+        "cap_a",
+        "Translation"
+      ]
+    },
+    {
+      "from": [
+        "cap_a_mesh",
+        "Mesh"
+      ],
+      "to": [
+        "cap_a",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "cap_b",
+        "Geometry"
+      ],
+      "to": [
+        "hull",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "cap_b_loc",
+        "Vector"
+      ],
+      "to": [
+        "cap_b",
+        "Translation"
+      ]
+    },
+    {
+      "from": [
+        "cap_b_mesh",
+        "Mesh"
+      ],
+      "to": [
+        "cap_b",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "cap_size",
+        "Vector"
+      ],
+      "to": [
+        "cap_a_mesh",
+        "Size"
+      ]
+    },
+    {
+      "from": [
+        "cap_size",
+        "Vector"
+      ],
+      "to": [
+        "cap_b_mesh",
+        "Size"
+      ]
+    },
+    {
+      "from": [
+        "end_attach_scaled",
+        "Vector"
+      ],
+      "to": [
+        "Group Output",
+        "End Attach"
+      ]
+    },
+    {
+      "from": [
+        "end_local",
+        "Vector"
+      ],
+      "to": [
+        "end_attach_scaled",
+        "Vector"
+      ]
+    },
+    {
+      "from": [
+        "hull",
+        "Geometry"
+      ],
+      "to": [
+        "assign_hull",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "place",
+        "Geometry"
+      ],
+      "to": [
+        "Group Output",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "scale_vec",
+        "Vector"
+      ],
+      "to": [
+        "place",
+        "Scale"
+      ]
+    },
+    {
+      "from": [
+        "shaft",
+        "Geometry"
+      ],
+      "to": [
+        "hull",
+        "Geometry"
+      ]
+    },
+    {
+      "from": [
+        "shaft_mesh",
+        "Mesh"
+      ],
+      "to": [
+        "shaft",
+        "Geometry"
+      ]
+    }
+  ]
+}
